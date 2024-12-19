@@ -38,7 +38,7 @@ HAUTEUR_TIGE_VERTICALE = 1000  # mm
 LONGEUR_TIGE_HORIZONTALE = 2000  # mm
 RAYON_DE_COURBURE_COUDE = 500  # mm
 # Constantes matériaux
-DENSITE_ACIER = 7.9e-05  # kg/mm²
+DENSITE_ACIER = 7.9e-09  # kg/mm²
 MODULE_YOUNG_ACIER = 2e5  # kg/mm²
 POISSON_ACIER = 0.3  # s.u.
 
@@ -313,10 +313,32 @@ mdb.models[MODELE_POUTRE].DisplacementBC(amplitude=UNSET, createStepName=
     vertices=mdb.models['Model-3D-poutre'].rootAssembly.instances[PIECE_1_TUYAU_VERTICAL+'-1'].vertices.getSequenceFromMask(
     mask=('[#1 ]', ), )), u1=SET, u2=SET, u3=SET, ur1=UNSET, ur2=UNSET, ur3=
     UNSET)
+# Mesh
 
+mdb.models['Model-3D-poutre'].parts['Tuyau horizontal'].seedPart(
+    deviationFactor=0.1, minSizeFactor=0.1, size=200.0)
+#mdb.models['Model-3D-poutre'].parts['Tuyau horizontal'].setElementType(
+#    elemTypes=(ElemType(elemCode=B31, elemLibrary=STANDARD), ), regions=(
+#    mdb.models['Model-3D-poutre'].parts['Tuyau horizontal'].edges.getSequenceFromMask(
+#    ('[#3 ]', ), ), ))
+mdb.models['Model-3D-poutre'].parts['Tuyau horizontal'].generateMesh()
+mdb.models['Model-3D-poutre'].parts['Tuyau vertical'].seedPart(deviationFactor=
+    0.1, minSizeFactor=0.1, size=100.0)
+mdb.models['Model-3D-poutre'].parts['Tuyau vertical'].generateMesh()
+mdb.models['Model-3D-poutre'].parts['Coude'].seedPart(deviationFactor=0.1, 
+    minSizeFactor=0.1, size=71.0)
+mdb.models['Model-3D-poutre'].parts['Coude'].generateMesh()
 
-# mdb.models[MODELE_POUTRE].parts[PIECE_1_TUYAU_VERTICAL].generateMesh()
-# mdb.models[MODELE_POUTRE].parts[PIECE_2_TUYAU_HORIZONTAL].generateMesh()
+# JOb
+mdb.models['Model-3D-poutre'].rootAssembly.regenerate()
+mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
+    explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
+    memory=90, memoryUnits=PERCENTAGE, model='Model-3D-poutre', modelPrint=OFF, 
+    multiprocessingMode=DEFAULT, name='Analyse-modale', nodalOutputPrecision=
+    SINGLE, numCpus=1, numGPUs=0, numThreadsPerMpiProcess=1, queue=None, 
+    resultsFormat=ODB, scratch='', type=ANALYSIS, userSubroutine='', waitHours=
+    0, waitMinutes=0)
+
 '''
 ## Load
 # mdb.models[MODELE_POUTRE].rootAssembly.Surface(end2Edges=
