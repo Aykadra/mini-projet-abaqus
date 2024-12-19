@@ -1,3 +1,5 @@
 abqpy == 2024.7.8
+h5py ~= 3.12.2
+meshio ~= 5.3.5
 pytest~=8.3.4
 pytest-cov~=6.0.0 
